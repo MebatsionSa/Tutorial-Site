@@ -1,0 +1,52 @@
+{% extends 'authentication/header.html' %}
+{% block content %}
+<div class="row">
+
+    {% if tutorial_search_results or course_search_results or tutorial_content_search_results %}
+        {# search by tutorial title #}
+        {% if tutorial_search_results %}
+            {% for result in tutorial_search_results %}
+                <!-- <a href="/studentube/{{result.id}}">{{result.tutorial_title}}</a> -->
+                <a href="{% url 'tutor:tutorial' requested_department=result.course_name.department_name course_name=result.course_name requested_url=result.id %}">
+                    <div class="card">
+                        {{result.course_name.department_name}}
+                        {{ result.course_name }}
+                        {{result.tutorial_title}}
+                    </div>
+                </a>   
+            {% endfor %}
+        {% endif %}
+
+        {# search by course_name #}
+        {% if course_search_results %}
+            {% for result in course_search_results %}
+                <!-- <a href="/studentube/{{result.department_name}}/{{result.course_name}}/"  style="color: black"> -->
+                <a href="{% url 'tutor:course' 
+                requested_department=result.department_name %}">
+                <div class="card">
+                    {{result.course_name}}
+                </div>
+                </a>
+            {% endfor %}
+        {% endif %}
+
+        {# search by any thing written in the content #}
+        {% if tutorial_content_search_results %}
+            {% for result in tutorial_content_search_results %}
+                <!-- <a href="/studentube/{{result.id}}"> -->
+                    <a href="{% url 'tutor:tutorial' requested_department=result.course_name.department_name course_name=result.course_name requested_url=result.id %}">
+                    <div class="card"></div>
+                        {{result.tutorial_title}}
+                    </div>
+                </a>
+            {% endfor %}
+        {% endif %}
+
+        {# search results with alink to that specific slug #}
+
+    {% else %}
+    <h3>Sorry</h3>
+        <p>Search result not found</p>
+    {% endif %}
+</div>
+{% endblock %}

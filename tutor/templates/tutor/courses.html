@@ -1,0 +1,17 @@
+{% extends "authentication/header.html" %}
+{% block content %}
+    <div class="row">
+        {% for course, part in tutorial.items %}
+            <div class="col s12 m6 l4">
+                <a href="{{course.course_name}}/{{part}}", style="color: black">
+                <div class="card hoverable">
+                    <div class="card-content">
+                        <div class="card-title">{{course.course_name}}</div>
+                        <p>{{ course.course_description }}</p>
+                    </div>
+                </div>
+                </a>
+            </div>
+        {% endfor %} 
+    </div>
+    {% endblock %}

@@ -1,0 +1,41 @@
+{% extends "authentication/header.html" %}
+{% block content %}
+    <div class="row">
+
+        <div class="col m6 l3 teal">
+            <ul class="collapsible popout">
+                {% for tutorial in sidebar %}
+                    {% if forloop.counter0 == selected_url_index %}
+                        <li class="active">
+                            <div class="collapsible-header">{{tutorial.tutorial_title}}<br>
+                                (currently viewing)
+                            </div>
+
+                        </li>
+                    {% else %}
+                        <li>
+                            <div class="collapsible-header">{{tutorial.tutorial_title}}</div>
+                            <div class="collapsible-body">
+                                <p><a href="../{{tutorial.id}}">
+                                    <button class="btn waves-effect waves-light right-align"
+                                    style="background-color: blue-grey darken-1;">Go</button></a></p>
+                            </div>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="col s6 m12 l9 brown">
+            <h3>{{tutorial.tutorial_title}}</h3>
+            <p style="font-size: 70%">Published {{tutorial.pub_date}}</p>
+            <p>{{tutorial.tutorial_content|safe}}</p>
+            <form action="{{tutorial.id}}" method="POST">
+                {% csrf_token %}
+                <button type="submit" name="id" value="{{id}}">Like</button>
+            </form>
+        </div>
+    
+    </div>
+
+{% endblock %}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+     <!-- Compiled and minified CSS 
+    <link href="{% static 'tinymce/css/prism.css' %}" rel="stylesheet"> -->
+    <!-- Compiled and minified CSS -->
+    <link href="{% static 'main/css/materialize.css' %}" rel="stylesheet">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="{% static 'js/materialize.min.js' %}"></script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorials</title>
+    {# {{ form.media }} #}
+    <!--<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>-->
+
+
+    <!--<script>
+        tinymce.init({
+            selector: '#mytextarea'
+        });
+    </script>-->
+</head>
+<body>
+        <nav>
+            <div class="nav-wrapper">
+            <a href="#" class="brand-logo">Tutorials</a>
+            <ul id="nav-mobile" class="right hide-on-med-and-down">
+                <li class="nav navbar-nav pull-right">
+                    <form display:inline-block action="{% url 'tutor:search' %}" method ="GET">
+                      <input type="text" name="q" placeholder="Search...">
+                    </form>
+                </li>
+                <li><a href="{% url 'tutor:home' %}">Home</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="/admin/tutor/tutorial">+ add tutorial</a></li>
+                    <li><a href="/account">{{user.username|capfirst}}</a></li>
+                    <li><a href="{% url 'authentication:logout' %}">Logout</a></li>
+                {% else %}
+                    <li><a href="{% url 'authentication:register' %}">Register</a></li>
+                    <li><a href="{% url 'authentication:login' %}">Login</a></li>
+                {% endif %}
+                </ul>
+            </div>
+        </nav>
+        <div class="container">
+            <br>
+            {% block content %}
+            {% endblock %}
+        </div>
+
+</body>
+    <!--<script src="{% static 'tinymce/js/prism.js' %}"></script>-->
+    <script>M.AutoInit();</script>
+</html>
