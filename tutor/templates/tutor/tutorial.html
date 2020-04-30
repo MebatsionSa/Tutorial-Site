@@ -30,9 +30,18 @@
             <h3>{{tutorial.tutorial_title}}</h3>
             <p style="font-size: 70%">Published {{tutorial.pub_date}}</p>
             <p>{{tutorial.tutorial_content|safe}}</p>
-            <form action="{{tutorial.id}}" method="POST">
+            {{total_likes}} Like{{total_likes|pluralize}}<br>
+            {{who}} like this tutorial.
+            <!-- {{tut.get_absolute_url}} -->
+            <form action="{% url 'tutor:like_post' tut.id %}" method="POST">
                 {% csrf_token %}
-                <button type="submit" name="id" value="{{id}}">Like</button>
+                {% if is_liked %}
+                    <button type="submit" name="tutorial_id" value="{{tut.id}}" class="btn waves-effect waves-light" 
+                    style="background-color: rgb(239, 31, 31);">Dislike</button>
+                {% else %}
+                    <button type="submit" name="tutorial_id" value="{{tut.id}}" class="btn waves-effect waves-light" 
+                    style="background-color: royalblue;">Like</button>
+                {% endif %}
             </form>
         </div>
     

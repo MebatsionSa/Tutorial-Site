@@ -73,10 +73,10 @@ class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
     change_password_form = PasswordChangeForm
-    list_display = ('username', 'email', 'registration_date', 'is_admin', 'is_superuser',)
+    list_display = ('username', 'email', 'first_name', 'last_name', 'registration_date', 'is_admin', 'is_superuser',)
     list_filter = ('is_admin',)
     fieldsets = (
-        (None, {'fields': ('username', 'password')}),
+        (None, {'fields': ('username', 'first_name', 'last_name', 'password')}),
         ('Personal info', {'fields':('email','registration_date',)}),
         ('Permissions', {'fields': ('is_admin','is_active','is_superuser',)}),
     )
@@ -84,13 +84,29 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes':('wide',),
-            'fields':('username','email','registration_date', 'password1','password2')}
+            'fields':('username', 'first_name', 'last_name','email','registration_date', 'password1','password2')}
         ),
     )
-    search_fields = ('email','username',)
+    search_fields = ('first_name', 'last_name','email','username', 'id')
     ordering = ('username',)
     filter_horizontal = ()
     filter_vertical = ()
+
+    def has_change_permission(self, request, obj=None):
+        has_class_permission = super(UserAdmin, self).has_change_permission(request, obj)
+        if not has_class_permission:
+            return False
+        if obj is not None and not request.user.is_superuser and request.user != obj.username:
+            return False
+        return True
+    
+    def has_delete_permission(self, request, obj=None):
+        has_class_permission = super(UserAdmin, self).has_delete_permission(request, obj)
+        if not has_class_permission:
+            return False
+        if obj is not None and not request.user.is_superuser:
+            return False
+        return True
 
 
 admin.site.register(User, UserAdmin)

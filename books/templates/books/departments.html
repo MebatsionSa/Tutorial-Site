@@ -1,0 +1,17 @@
+{% extends "authentication/header.html" %}
+{% block content %}
+    <div class="row">
+        {% for dep in department %}
+            <div class="col s12 m6 l4">
+                <a href="{{dep.department_short_name}}", style="color: black">
+                <div class="card hoverable">
+                    <div class="card-content">
+                        <div class="card-title">{{dep.department_name}}</div>
+                        <p>{{ dep.department_description }}</p>
+                    </div>
+                </div>
+                </a>
+            </div>
+        {% endfor %} 
+    </div>
+{% endblock %}

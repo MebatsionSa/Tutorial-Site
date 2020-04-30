@@ -21,6 +21,19 @@
             selector: '#mytextarea'
         });
     </script>-->
+    <script >
+        /*$(document).ready(function(e){
+            $(".dropdown-trigger").dropdown()
+        });*/
+        document.addEventListener('DOMContentLoaded', function(){
+            var elems = document.querySelectorAll('.dropdown-trigger');
+            var instances = {
+                coverTrigger: false,
+                hover: true
+            }
+            var instance = M.Dropdown.init(elems,instances);
+        });
+    </script>
 </head>
 <body>
         <nav>
@@ -34,9 +47,27 @@
                 </li>
                 <li><a href="{% url 'tutor:home' %}">Home</a></li>
                 {% if user.is_authenticated %}
-                    <li><a href="/admin/tutor/tutorial">+ add tutorial</a></li>
-                    <li><a href="/account">{{user.username|capfirst}}</a></li>
-                    <li><a href="{% url 'authentication:logout' %}">Logout</a></li>
+                    <li><a class="dropdown-trigger" style="background-color:transparent;" href="#" data-target="dropdown1">+ add</a></li>
+                    <ul id="dropdown1" class="dropdown-content">
+                        <li><a href="/admin/tutor/tutorial">Tutorials</a></li>
+                        <li><a href="/admin/books/book/">Books</a></li>
+                        <li><a href="/admin/videos/video">Videos</a></li>
+                    </ul>
+                    
+                    <li><a class="dropdown-trigger"  style="background-color: transparent;" href="#" data-target="dropdown2">{{user.username|capfirst}}</a></li>
+                    <div class="container">
+                        <ul id="dropdown2" class="dropdown-content" hover="false">
+                            <!-- <li><a href="{% url 'authentication:editMyProfile' %}">{{user.username|capfirst}}</a></li> -->
+                           <li><a href="{% url 'authentication:editMyProfile' %}">Profile</a></li>
+                           <li><a href="{% url 'authentication:logout' %}">Logout</a></li>
+                       </ul>
+                    </div>
+                    
+                    {# comment #}
+                        <!-- <li><a href="{% url 'authentication:editMyProfile' %}">{{user.username|capfirst}}</a></li>
+                        <li><a href="{% url 'authentication:change_password' %}">{{user.username|capfirst}}</a></li>
+                        <li><a href="{% url 'authentication:logout' %}">Logout</a></li>-->
+                    {# endcomment #}
                 {% else %}
                     <li><a href="{% url 'authentication:register' %}">Register</a></li>
                     <li><a href="{% url 'authentication:login' %}">Login</a></li>
@@ -52,5 +83,5 @@
 
 </body>
     <!--<script src="{% static 'tinymce/js/prism.js' %}"></script>-->
-    <script>M.AutoInit();</script>
+   <script>M.AutoInit();</script>
 </html>

@@ -12,6 +12,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from .tokens import account_activation_token
+from django.contrib.auth.decorators import login_required
 
 def index(request, single_slug):
     """if single_slug == 'admin':
@@ -25,12 +26,13 @@ def index(request, single_slug):
     return HttpResponse("Aloha there!")
 
 def home(request):
-    return HttpResponse("Hello from home")
+    return redirect("tutor:home")
 
 def register(request):
     if request.method == "POST":
         form = UserRegisterForm(request.POST)
         if form.is_valid():
+            # for not email based authentication
             user = form.save(commit=True)
             user.is_active=True
             redirect('authentication:login')
@@ -50,14 +52,14 @@ def register(request):
             email = EmailMessage(mail_subject, message, to=[to_email])
             email.send()
             return render(request,
-                         'tinyapp/email_confirmation.html')
+                         'tinyapp/email_confirmatiMyProfilon.html')
             """
 
     else:
         form = UserRegisterForm()
     return render(request,
                   "authentication/register.html",
-                  context={"form":form}) # must be tha same name as the one in register.html
+                  context={'form':form}) # must be tha same name as the one in register.html
         
 # user will get activate link to their email address
 def activate(request, uidb64, token):
@@ -74,7 +76,7 @@ def activate(request, uidb64, token):
     else:
         return render(request,
                       "authentication/activation_expired.html")
-
+@login_required
 def logout_(request):
     logout(request)
     messages.info(request, "logged out successfully!")
@@ -111,5 +113,39 @@ def login_(request):
     form = AuthenticationForm()
     return render(request,
                   "authentication/login.html",
-                  {"form":form}) # must be tha same name as the one in register.html
- 
+                  {'form':form}) # must be tha same name as the one in register.html
+@login_required
+def my_profile(request):
+    if request.user:
+        user = request.user
+    initial_info = {'user':user}
+    if request.method == 'POST':
+        form = EditMyProfile(request.POST, request.FILES, instance=request.user, initial=initial_info)
+        if form.is_valid():
+            change = form.save(commit=False)
+            change.save()
+            messages.success(request, "The user "+change.username+" was updated successfully.")
+
+    else:
+        form = EditMyProfile(instance=request.user, initial=initial_info)
+    return render(request,
+                  "authentication/editMyProfile.html",
+                  {'form':form})
+@login_required
+def change_password(request):
+    print(request.method)
+    if request.method == 'POST':
+        print("Aloha")
+        form = ChangePassword(request.POST, password=request.user.password)
+        if form.is_valid():
+            print(True)
+            new_password = request.POST.get('new_password')
+            request.user.set_password(new_password)
+            request.user.save()
+            messages.success(request, "The password was changed successfully.")
+    else:
+        form = ChangePassword(password=request.user.password)
+
+    return render(request,
+                  "authentication/changePassword.html",
+                  {'form':form})

@@ -1,0 +1,44 @@
+{% extends "authentication/header.html" %}
+{% block content %}
+    <div class="row">
+
+        <div class="col m6 l3 teal">
+            
+            <ul class="collapsible popout">
+                {% for video in sidebar %}
+                    {% if forloop.counter0 == selected_url_index %}
+                        <li class="active">
+                            <div class="collapsible-header">{{video.video_title}}<br>
+                                (currently viewing)
+                            </div>
+
+                        </li>
+                    {% else %}
+                        <li>
+                            <div class="collapsible-header">{{video.video_title}}</div>
+                            <div class="collapsible-body">
+                                <p><a href="../{{video.id}}">
+                                    <button class="btn waves-effect waves-light right-align"
+                                    style="background-color: blue-grey darken-1;">Go</button></a></p>
+                            </div>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="col s6 m12 l9 brown">
+            <h3>{{video.video_title}}</h3>
+            <p style="font-size: 70%">Published {{video.publication_date}}</p>
+            <!-- <p>{{video.video_file|safe}}</p> -->
+            <video width="600" controls>
+                <source src="../../../../../media/{{video.video_file}}" type="video/mp4">
+                <source src="../../../../../media/{{video.video_file}}.ogg" type="video/ogg">
+                Your browser does not support HTML5 video.
+            </video>
+
+        </div>
+    
+    </div>
+
+{% endblock %}

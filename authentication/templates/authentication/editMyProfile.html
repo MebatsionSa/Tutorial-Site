@@ -1,0 +1,12 @@
+{% extends "authentication/header.html" %}
+{% block content %}
+
+    <form method="POST">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button class="btn" style="background-color: blue-grey darken-1;" type="submit">Save changes</button>
+    </form>
+    <a href="{% url 'authentication:change_password' %}">
+        <button class="btn" style="background-color: blue-grey darken-1; float:right;" type="submit">Change Password</button>
+    </a>
+{% endblock %}

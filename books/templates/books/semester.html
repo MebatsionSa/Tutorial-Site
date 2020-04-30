@@ -1,0 +1,18 @@
+{% extends "authentication/header.html" %}
+{% block content %}
+    <div class="row">
+        <p>The department has the following semesters:</p><br>
+        {% for dep in all_semester %}
+            <div class="col s12 m6 l4">
+                <a href="{{dep.semester_name}}", style="color: #fff;">
+                <div class="card hoverable"  style="background: #000;">
+                    <div class="card-content">
+                        <div class="card-title">Semester {{dep.semester_name}}</div>
+                        <p>{{ dep.semester_name }}</p>
+                    </div>
+                </div>
+                </a>
+            </div>
+        {% endfor %} 
+    </div>
+{% endblock %}

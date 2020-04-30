@@ -16,17 +16,28 @@ class UserRegisterForm(forms.ModelForm):
     )
     class Meta:
         model = User
-        fields = ['username', 'email','user_password', 'confirm_password']
+        fields = ['username', 'email', 'first_name', 'last_name', 'user_password', 'confirm_password']
 
     def clean(self):
         cleaned_data = super().clean()
         username = cleaned_data.get('username')
+        first_name = cleaned_data.get('first_name')
+        last_name = cleaned_data.get('last_name')
         user_password = cleaned_data.get('user_password')
         confirm = cleaned_data.get('confirm_password')
         email = cleaned_data.get('email')
         #date_of_birth = cleaned_data.get('date_of_birth')
 
-        if (not username) or (not email) or (not user_password) or (not confirm):
+        if (not username) and (not username.lower()):
+            raise forms.ValidationError("Please enter a valid username.")
+
+        if (not email):
+            raise forms.ValidationError("Enter a valid email address.")
+            
+        if (not user_password):
+            raise forms.ValidationError("Please enter user password.")
+
+        if (not confirm):
             raise forms.ValidationError("Please correct the errors below.")
 
         if user_password and confirm:
@@ -55,11 +66,13 @@ class EditUserProfile(forms.ModelForm):
 class AddUser(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'email', ]
+        fields = ['username', 'first_name', 'last_name', 'email', ]
 
     def clean(self):
         cleaned_data = super().clean()
         username = cleaned_data.get('username')
+        first_name = cleaned_data.get('first_name')
+        last_name = cleaned_data.get('last_name')
         email = cleaned_data.get('email')
 
         if (not username):
@@ -70,10 +83,12 @@ class AddUser(forms.ModelForm):
 class EditMyProfile(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['username', 'email']
+        fields = ['username', 'first_name', 'last_name', 'email']
     def clean(self):
         cleaned_data = super().clean()
         username = cleaned_data.get('username')
+        first_name = cleaned_data.get('first_name')
+        last_name = cleaned_data.get('last_name')
         email = cleaned_data.get('email')
         if (not username) or (not email):
             raise forms.ValidationError("Please correct the errors below.")
@@ -119,3 +134,6 @@ class ChangePassword(forms.Form):
             raise forms.ValidationError('Your old password was entered incorrectly. Please enter again.')
 
         return cleaned_data
+
+# class PasswordResetForm(forms.Form):
+    

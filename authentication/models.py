@@ -6,14 +6,16 @@ from django.utils import timezone
 from django.utils.timezone import now
 
 class UserManager(BaseUserManager):
-    def create_user(self, username, email, password=None):
+    def create_user(self, username, first_name, last_name, email, password=None):
         """
         Creates and saves a User with the givem email, date_of_birth, registration_date, and password """
         if not email:
             raise ValueError('Users must have an email address.')
         
         user = self.model(
-            username=username,
+            username=username.lower(),
+            first_name=first_name.title(),
+            last_name=last_name.title(),
             email=self.normalize_email(email),
             registration_date=timezone.now().date(),
             #date_of_birth = date_of_birth,
@@ -22,12 +24,14 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self,username, email, password):
+    def create_superuser(self,username, first_name, last_name, email, password):
         """
         Creates and saves a superuser with the givem email, date_of_birth, registration_date, and password 
         """
         user = self.create_user(
             username=username,
+            first_name=first_name,
+            last_name=last_name,
             email=email,
             password=password
         )
@@ -47,6 +51,8 @@ class User(AbstractBaseUser):
         max_length=255, 
         unique=True,
     )
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
     registration_date = models.DateField(default=now)
     #date_of_birth = models.DateField(default=now)
     is_active = models.BooleanField(default=True)
@@ -61,7 +67,12 @@ class User(AbstractBaseUser):
     def __str__(self):
         return self.email
     """
-    
+    def get_all_permissions(obj=None):
+        if obj.is_superuser:
+            return True
+        return False
+
+
     def has_perm(self, perm, obj=None):
         # superuser is True
         return True

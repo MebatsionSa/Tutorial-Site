@@ -1,0 +1,22 @@
+{% extends "authentication/header.html" %}
+{% block content %}
+    <div class="row">
+        {% if courses %}
+            <p>The department has the following courses:</p><br>
+            {% for course, video in videos.items %}
+                <div class="col s12 m6 l4">
+                    <a href="{{course.id}}/{{video}}", style="color: #fff;">
+                    <div class="card hoverable"  style="background: #000;">
+                        <div class="card-content">
+                            <div class="card-title">{{course.course_name}}</div>
+                            <p>{{ course.course_description }}</p>
+                        </div>
+                    </div>
+                    </a>
+                </div>
+            {% endfor %} 
+        {% else %}
+            <p>Sorry, courses for the department has not uploaded.</p>
+        {% endif %}
+    </div>
+{% endblock %}
