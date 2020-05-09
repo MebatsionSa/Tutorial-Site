@@ -1,6 +1,8 @@
 from django import forms
 from .models import User
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth import get_user_model
+import datetime
 
 class UserRegisterForm(forms.ModelForm):
     user_password = forms.CharField(
@@ -15,7 +17,7 @@ class UserRegisterForm(forms.ModelForm):
         help_text='*Confirm password'
     )
     class Meta:
-        model = User
+        model = get_user_model()
         fields = ['username', 'email', 'first_name', 'last_name', 'user_password', 'confirm_password']
 
     def clean(self):
@@ -45,6 +47,15 @@ class UserRegisterForm(forms.ModelForm):
                 raise forms.ValidationError("Password is not confirmed.")
 
         return cleaned_data
+
+    def save(self, commit=True):
+        user = super(UserRegisterForm, self).save(commit=False)
+        user.registration_date = datetime.date.today()
+        user.last_login = datetime.date.today()
+        user.set_password(self.cleaned_data["confirm_password"])
+        if commit:
+            user.save()
+        return user
 
 class EditUserProfile(forms.ModelForm):
     class Meta:

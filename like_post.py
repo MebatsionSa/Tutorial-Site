@@ -174,3 +174,185 @@ urls.py
         # path('search_results/q<slug:slug>/', views.SearchResults,name='search'),
         # <slug:requested_department>/<slug:course_name>/<int:requested_url>/<int:id>
     ]
+
+def login_(request):
+    if request.user.is_authenticated:
+        username = form.cleaned_data.get('')
+        return redirect("tutor:home")
+    else:
+        if request.method == "POST":
+            form = AuthenticationForm(request, data=request.POST)
+            if form.is_valid():
+                username = form.cleaned_data.get('username')
+                password = form.cleaned_data.get('password')
+                user = authenticate(username=username, password=password)
+                print("Velcome ")
+                if user is not None:
+                    form = login(request,user)
+                    print("Velcome ")
+                    messages.success(request, f"you are now logged in as {username}")
+                    print("Velcome ")
+                    redirect("authentication:login")
+                    return redirect("tutor:home")
+                    messages.success(request, f"you are now logged in as {username}")
+
+                    print("Velcome ")
+                else:
+                    messages.error(request, "Invalid username or password due something wrong with {username}'s account.")
+
+            else:
+                # messages.error(request, "Invalid username or password")
+                username = form.cleaned_data.get('username')
+                password = form.cleaned_data.get('password')
+
+                user = User.objects.get(username=username)
+                if user is not None:
+                    login(request, user)
+                    return redirect("tutor:home")
+                else:
+                    messages.error(request, "The user is not registered yet.")                
+
+    form = AuthenticationForm()
+    return render(request,
+                  "authentication/login.html",
+                  {'form':form})
+
+# anonymous user
+def login_(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if request.user.is_anonymous:
+            print()
+            error = list(form.error_messages.values())
+            p = str(error[0])
+            print(p)
+            print(messages.error(request, p))
+
+        else:
+            if form.is_valid():
+                username = form.cleaned_data.get('username')
+                password = form.cleaned_data.get('password')
+                user = authenticate(username=username, password=password)
+                print("Velcome ")
+                if user is not None:
+                    form = login(request,user)
+                    print("Velcome ")
+                    messages.success(request, f"you are now logged in as {username}")
+                    print("Velcome ")
+                    return redirect("tutor:home")
+                    messages.success(request, f"you are now logged in as {username}")
+
+                    print("Velcome ")
+                else:
+                    messages.error(request, "Invalid username or password due something wrong with {username}'s account.")
+
+            else:
+                messages.error(request, "Invalid username or password")
+                username = form.cleaned_data.get('username')
+                password = form.cleaned_data.get('password')
+                messages.error(request, "Invalid username or password")
+        
+                user = User.objects.get(username=username)
+                if user is not is_anonymous:
+                    login(request, user)
+                    messages.success(request, f"you are now logged in as {username}")                 
+                    return redirect("tutor:home")
+                else:
+                    messages.error(request, "The user is not registered yet.")                
+    
+    form = AuthenticationForm()
+    return render(request,
+                  "authentication/login.html",
+                  {'form':form}) 
+
+#previously
+def login_(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        print(form)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            print("Velcome ")
+            if user is not None:
+               form = login(request,user)
+               print("Velcome ")
+               messages.success(request, f"you are now logged in as {username}")
+               print("Velcome ")
+               return redirect("tutor:home")
+               messages.success(request, f"you are now logged in as {username}")
+
+               print("Velcome ")
+            else:
+                messages.error(request, "Invalid username or password due something wrong with {username}'s account.")
+
+        else:
+            messages.error(request, "Invalid username or password")
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+
+            user = User.objects.get(username=username)
+            if user is not None:
+                login(request, user)
+                messages.success(request, f"you are now logged in as {username}")                 
+                return redirect("tutor:home")
+            else:
+                messages.error(request, "The user is not registered yet.")                
+
+    form = AuthenticationForm()
+    return render(request,
+                  "authentication/login.html",
+                  {'form':form})
+
+# latest but says anonymous for all users
+def login_(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
+        if request.user.is_anonymous:
+            messages.info(request, "Please enter a correct %s and password." % ('username'))
+            messages.info(request, "Note that both fields may be case-sensitive.")
+            return redirect("authentication:login")
+            """print()
+            error = list(form.error_messages.values())
+            p = str(error[0])
+            print(p)
+            print(messages.error(request, p))"""
+
+        else:
+            if form.is_valid():
+                username = form.cleaned_data.get('username')
+                password = form.cleaned_data.get('password')
+                user = authenticate(username=username, password=password)
+                print("Velcome ")
+                if user is not None:
+                    form = login(request,user)
+                    print("Velcome ")
+                    messages.success(request, f"you are now logged in as {username}")
+                    print("Velcome ")
+                    return redirect("tutor:home")
+                    messages.success(request, f"you are now logged in as {username}")
+
+                    print("Velcome ")
+                else:
+                    messages.error(request, "Invalid username or password due something wrong with {username}'s account.")
+
+            else:
+                username = form.cleaned_data.get('username')
+                password = form.cleaned_data.get('password')
+                messages.info(request, "Invalid username or password")
+        
+                user = User.objects.get(username=username)
+                if user is not is_anonymous:
+                    login(request, user)
+                    messages.success(request, f"you are now logged in as {username}")                 
+                    return redirect("tutor:home")
+                else:
+                    messages.error(request, "The user is not registered yet.")                
+    
+    form = AuthenticationForm()
+    return render(request,
+                  "authentication/login.html",
+                  {'form':form}) 
+
+# before get_user_model()

@@ -38,43 +38,59 @@
 <body>
         <nav>
             <div class="nav-wrapper">
-            <a href="#" class="brand-logo">Tutorials</a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li class="nav navbar-nav pull-right">
-                    <form display:inline-block action="{% url 'tutor:search' %}" method ="GET">
-                      <input type="text" name="q" placeholder="Search...">
-                    </form>
-                </li>
-                <li><a href="{% url 'tutor:home' %}">Home</a></li>
-                {% if user.is_authenticated %}
-                    <li><a class="dropdown-trigger" style="background-color:transparent;" href="#" data-target="dropdown1">+ add</a></li>
-                    <ul id="dropdown1" class="dropdown-content">
-                        <li><a href="/admin/tutor/tutorial">Tutorials</a></li>
-                        <li><a href="/admin/books/book/">Books</a></li>
-                        <li><a href="/admin/videos/video">Videos</a></li>
+                <a href="/" class="brand-logo">Tutorials</a>
+                <ul id="nav-mobile" class="right hide-on-med-and-down">
+                    <li class="nav navbar-nav pull-right">
+                        <form display:inline-block action="{% url 'tutor:search' %}" method ="GET">
+                        <input type="text" name="q" placeholder="Search...">
+                        </form>
+                    </li>
+                    <li><a href="{% url 'tutor:home' %}">Home</a></li>
+                    {% if user.is_authenticated %}
+                        <li><a class="dropdown-trigger" style="background-color:transparent;" href="#" data-target="dropdown1">+ add</a></li>
+                        <ul id="dropdown1" class="dropdown-content">
+                            <li><a href="/admin/tutor/tutorial">Tutorials</a></li>
+                            <li><a href="/admin/books/book/">Books</a></li>
+                            <li><a href="/admin/videos/video">Videos</a></li>
+                        </ul>
+                        
+                        <li><a class="dropdown-trigger"  style="background-color: transparent;" href="#" data-target="dropdown2">{{user.username|capfirst}}</a></li>
+                        <div class="container">
+                            <ul id="dropdown2" class="dropdown-content" hover="false">
+                                <!-- <li><a href="{% url 'authentication:editMyProfile' %}">{{user.username|capfirst}}</a></li> -->
+                            <li><a href="{% url 'authentication:editMyProfile' %}">Profile</a></li>
+                            <li><a href="{% url 'authentication:logout' %}">Logout</a></li>
+                        </ul>
+                        </div>
+                        
+                        {# comment #}
+                            <!-- <li><a href="{% url 'authentication:editMyProfile' %}">{{user.username|capfirst}}</a></li>
+                            <li><a href="{% url 'authentication:change_password' %}">{{user.username|capfirst}}</a></li>
+                            <li><a href="{% url 'authentication:logout' %}">Logout</a></li>-->
+                        {# endcomment #}
+                    {% else %}
+                        <li><a href="{% url 'authentication:register' %}">Register</a></li>
+                        <li><a href="{% url 'authentication:login' %}">Login</a></li>
+                    {% endif %}
                     </ul>
-                    
-                    <li><a class="dropdown-trigger"  style="background-color: transparent;" href="#" data-target="dropdown2">{{user.username|capfirst}}</a></li>
-                    <div class="container">
-                        <ul id="dropdown2" class="dropdown-content" hover="false">
-                            <!-- <li><a href="{% url 'authentication:editMyProfile' %}">{{user.username|capfirst}}</a></li> -->
-                           <li><a href="{% url 'authentication:editMyProfile' %}">Profile</a></li>
-                           <li><a href="{% url 'authentication:logout' %}">Logout</a></li>
-                       </ul>
-                    </div>
-                    
-                    {# comment #}
-                        <!-- <li><a href="{% url 'authentication:editMyProfile' %}">{{user.username|capfirst}}</a></li>
-                        <li><a href="{% url 'authentication:change_password' %}">{{user.username|capfirst}}</a></li>
-                        <li><a href="{% url 'authentication:logout' %}">Logout</a></li>-->
-                    {# endcomment #}
-                {% else %}
-                    <li><a href="{% url 'authentication:register' %}">Register</a></li>
-                    <li><a href="{% url 'authentication:login' %}">Login</a></li>
-                {% endif %}
-                </ul>
-            </div>
+                </div>
         </nav>
+        <!-- <script>M.toast({html:"{{message}}", classes: 'blue rounded', displayLength:2000});</script> -->
+        {% if messages %}
+            <!-- <script>M.toast({html:"{{message}}", classes: 'blue rounded', displayLength:2000});</script> -->
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <script>M.toast({html:"{{message}}", classes: 'green rounded', displayLength:2000});</script>
+                {% elif message.tags == 'info' %}
+                    <script>M.toast({html:"{{message}}", classes: 'blue rounded', displayLength:2000});</script>
+                {% elif message.tags == 'warning' %}
+                    <script>M.toast({html:"{{message}}", classes: 'orange rounded', displayLength:2000});</script>
+                {% elif message.tag == 'error' %}
+                    <script>M.toast({html:"{{message}}", classes: 'red rounded', displayLength:2000});</script>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
         <div class="container">
             <br>
             {% block content %}

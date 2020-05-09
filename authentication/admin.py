@@ -73,7 +73,7 @@ class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
     change_password_form = PasswordChangeForm
-    list_display = ('username', 'email', 'first_name', 'last_name', 'registration_date', 'is_admin', 'is_superuser',)
+    # list_display = ('username', 'email', 'first_name', 'last_name', 'registration_date', 'is_admin', 'is_superuser',)
     list_filter = ('is_admin',)
     fieldsets = (
         (None, {'fields': ('username', 'first_name', 'last_name', 'password')}),
@@ -92,6 +92,22 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ()
     filter_vertical = ()
 
+    def has_add_permission(self, request):
+        has_class_permission = super(UserAdmin, self).has_add_permission(request)
+        if not has_class_permission:
+            return False
+        if request.user is not None and not request.user.is_superuser:
+            return False
+        return True
+    
+    """def has_view_permission(self, request, obj=None):
+        has_class_permission = super(UserAdmin, self).has_view_permission(request, obj)
+        if not has_class_permission:
+            return False
+        if obj is not None and not request.user.is_superuser and request.user != obj.username:
+            return False
+        return True"""
+
     def has_change_permission(self, request, obj=None):
         has_class_permission = super(UserAdmin, self).has_change_permission(request, obj)
         if not has_class_permission:
@@ -108,6 +124,16 @@ class UserAdmin(BaseUserAdmin):
             return False
         return True
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        if request.user.is_superuser:
+            return qs
+        return qs.filter(username=request.user)
+
+    """def get_fields(self, request):
+        if request.user.is_superuser:
+            return ['username', 'email', 'first_name', 'last_name', 'registration_date', 'is_admin', 'is_superuser',]
+        return ['username', 'email', 'first_name', 'last_name', 'registration_date'] """
 
 admin.site.register(User, UserAdmin)
 admin.site.unregister(Group)

@@ -13,6 +13,9 @@ from django.utils.encoding import force_bytes, force_text
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from .tokens import account_activation_token
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
+from django.views.decorators.cache import never_cache
+from django.urls import reverse
 
 def index(request, single_slug):
     """if single_slug == 'admin':
@@ -35,7 +38,9 @@ def register(request):
             # for not email based authentication
             user = form.save(commit=True)
             user.is_active=True
-            redirect('authentication:login')
+            messages.success(request, f"you are now registered successfully!!!")
+
+            return redirect('authentication:login')
             """
             user = form.save(commit=False)
             user.is_active=False
@@ -82,38 +87,26 @@ def logout_(request):
     messages.info(request, "logged out successfully!")
     return redirect("authentication:login")
 
+@never_cache
 def login_(request):
-    if request.method == "POST":
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=password)
-           
-            if user is not None:
-               form = login(request,user)
-               messages.success(request, f"you are now logged in as {username}")
-               return redirect("tutor:home")
-               print("Velcome ")
-            else:
-                messages.error(request, "Invalid username or password due something wrong with {username}'s account.")
-
-        else:
-            # messages.error(request, "Invalid username or password")
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-
-            user = User.objects.get(username=username)
-            if user is not None:
+    if request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('tutor:home'))
+    else:
+        if request.method == "POST":
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            UserModel = get_user_model()
+            user = UserModel.objects.get(username=username)
+            if user.check_password(password):
                 login(request, user)
+                messages.success(request, f"you are now logged in as {username}")
                 return redirect("tutor:home")
-            else:
-                messages.error(request, "The user is not registered yet.")                
-
-    form = AuthenticationForm()
-    return render(request,
-                  "authentication/login.html",
-                  {'form':form}) # must be tha same name as the one in register.html
+            return redirect("authentication:login")
+                
+        form = AuthenticationForm()
+        return render(request,
+                    "authentication/login.html",
+                    {'form':form}) # must be tha same name as the one in register.html
 @login_required
 def my_profile(request):
     if request.user:

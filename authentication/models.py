@@ -2,6 +2,7 @@ from django.db import models
 
 # Create your models here.
 from django.contrib.auth.models import User, AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import AnonymousUser
 from django.utils import timezone
 from django.utils.timezone import now
 
@@ -21,6 +22,7 @@ class UserManager(BaseUserManager):
             #date_of_birth = date_of_birth,
         )
         user.set_password(password)
+        user.is_anonymous= False
         user.save(using=self._db)
         return user
 
@@ -42,7 +44,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser):
     username = models.CharField(
-        verbose_name='Username',
+        verbose_name='username',
         max_length=255, 
         unique=True,
     )
@@ -56,8 +58,9 @@ class User(AbstractBaseUser):
     registration_date = models.DateField(default=now)
     #date_of_birth = models.DateField(default=now)
     is_active = models.BooleanField(default=True)
-    is_admin = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=True)
     is_superuser = models.BooleanField(default=False)
+    #is_anonymous = models.BooleanField(default=False)
     objects = UserManager()
 
     USERNAME_FIELD = 'username'
@@ -72,6 +75,10 @@ class User(AbstractBaseUser):
             return True
         return False
 
+    def get_user_permissions(self,obj=None):
+        if obj.is_active:
+            return True
+        return False
 
     def has_perm(self, perm, obj=None):
         # superuser is True
