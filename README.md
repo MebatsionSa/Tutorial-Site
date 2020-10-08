@@ -5,7 +5,7 @@ This project is a youtube-like but kind of done for any university.<br>It is bas
 ## Built with 
 
 * [Django](https://www.djangoproject.com/)
-* Pure HTML
+* [Materialize](https://materializecss.com/)
 
 ### Authors
 > Mebatsion Sahle
